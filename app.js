@@ -36,20 +36,55 @@ function addBookToLibrary(book) {
   myLibrary.push(book);
 }
 
-function resetBooks(container) {
-  container.innerHTML = null;
-}
-
 function renderBooks(container) {
+  removeAllChildren(container);
+
   myLibrary.forEach(book => {
     const row = document.createElement('tr');
-    row.dataset.title = book.title;
-    row.innerHTML = `
-      <td>${book.title}</td>
-      <td>${book.author}</td>
-      <td>${book.pages}</td>
-      <td>${book.isRead ? 'Already read' : 'Not read yet'}</td>
-    `;
+
+    const titleTd = document.createElement('td');
+    const authorTd = document.createElement('td');
+    const pagesTd = document.createElement('td');
+    const isReadTd = document.createElement('td');
+    const actionsTd = document.createElement('td');
+
+    const readBtn = document.createElement('button');
+    const removeBtn = document.createElement('button');
+
+    titleTd.textContent = book.title;
+    authorTd.textContent = book.author;
+    pagesTd.textContent = book.pages;
+    isReadTd.textContent = book.isRead ? 'Already read' : 'Not read yet';
+
+    readBtn.textContent = 'Read';
+    removeBtn.textContent = 'Remove';
+    
+    readBtn.addEventListener('click', function() {
+      book.isRead = !book.isRead;
+      isReadTd.textContent = book.isRead ? 'Already read' : 'Not read yet';
+    });
+
+    removeBtn.addEventListener('click', function(e) {
+      for (let item of myLibrary) {
+        if (book.title === item.title) {
+          const index = myLibrary.indexOf(item);
+          myLibrary.splice(index, 1);
+          container.removeChild(row);
+
+          console.log(myLibrary);
+        }
+      }
+    });
+
+    actionsTd.appendChild(readBtn);
+    actionsTd.appendChild(removeBtn);
+
+    row.appendChild(titleTd);
+    row.appendChild(authorTd);
+    row.appendChild(pagesTd);
+    row.appendChild(isReadTd);
+    row.appendChild(actionsTd);
+
     container.appendChild(row);
   });
 }
@@ -74,9 +109,14 @@ closeModalBtn.addEventListener('click', closeModal);
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
+  for (let item of myLibrary) {
+    if (title.value === item.title) {
+      alert('Book already added to library!');
+      return;
+    }
+  }
   const book = new Book(title.value, author.value, pages.value, readStatus.checked);
   addBookToLibrary(book);
-  resetBooks(tableBody);
   renderBooks(tableBody);
 });
 
@@ -90,6 +130,8 @@ function closeModal() {
   modal.classList.remove('show');
 }
 
-// Add new book
-// Add remove button
-// Add 'read' toggle
+function removeAllChildren(element) {
+  while (element.firstChild) {
+    element.removeChild(element.firstChild);
+  }
+}
