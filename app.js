@@ -1,29 +1,4 @@
-let myLibrary = [
-  {
-    title: 'How to play the guitar',
-    author: 'Carlos Santana',
-    pages: 257,
-    isRead: true
-  },
-  {
-    title: 'Placeholder Book',
-    author: 'Someone Johnson',
-    pages: 128,
-    isRead: false
-  },
-  {
-    title: 'Random Title',
-    author: 'John Doe',
-    pages: 470,
-    isRead: true
-  },
-  {
-    title: 'Hey Joe!',
-    author: 'Jane Doe',
-    pages: 111,
-    isRead: true
-  },
-];
+let myLibrary = [];
 
 function Book(title, author, pages, isRead) {
   this.title = title;
@@ -70,8 +45,6 @@ function renderBooks(container) {
           const index = myLibrary.indexOf(item);
           myLibrary.splice(index, 1);
           container.removeChild(row);
-
-          console.log(myLibrary);
         }
       }
     });
@@ -89,7 +62,6 @@ function renderBooks(container) {
   });
 }
 
-// const table = document.querySelector('table');
 const tableBody = document.querySelector('tbody');
 renderBooks(tableBody);
 
