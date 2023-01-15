@@ -78,11 +78,54 @@ const author = document.querySelector('#author');
 const pages = document.querySelector('#pages');
 const readStatus = document.querySelector('#status');
 
+const titleError = document.querySelector('#titleError');
+const authorError = document.querySelector('#authorError');
+const pagesError = document.querySelector('#pagesError');
+
 openModalBtn.addEventListener('click', openModal);
 closeModalBtn.addEventListener('click', closeModal);
 
+form.addEventListener('input', (e) => {
+  if (title.validity.valid) {
+    titleError.textContent = "";
+    titleError.className = "error";
+  } else {
+    showTitleError();
+  }
+
+  if (author.validity.valid) {
+    authorError.textContent = "";
+    authorError.className = "error";
+  } else {
+    showAuthorError();
+  }
+
+  if (pages.validity.valid) {
+    pagesError.textContent = "";
+    pagesError.className = "error";
+  } else {
+    showPagesError();
+  }
+});
+
 form.addEventListener('submit', (e) => {
   e.preventDefault();
+
+  if (!title.validity.valid) {
+    showTitleError();
+    return;
+  }
+  
+  if (!author.validity.valid) {
+    showAuthorError();
+    return;
+  }
+  
+  if (!pages.validity.valid) {
+    showPagesError();
+    return;
+  }
+
   for (let item of myLibrary) {
     if (title.value === item.title) {
       alert('Book already added to library!');
@@ -108,4 +151,40 @@ function removeAllChildren(element) {
   while (element.firstChild) {
     element.removeChild(element.firstChild);
   }
+}
+
+function showTitleError() {
+  if (title.validity.valueMissing) {
+    titleError.textContent = "You need the enter the title."
+  } else if (title.validity.tooShort) {
+    titleError.textContent = `Entered value should be at least ${title.minLength} characters; you entered ${title.value.length}.`
+  } else if (title.validity.tooLong) {
+    titleError.textContent = `Entered value should be maximum ${title.maxLength} characters; you entered ${title.value.length}.`
+  }
+
+  titleError.className = "error active";
+}
+
+function showAuthorError() {
+  if (author.validity.valueMissing) {
+    authorError.textContent = "You need the enter the name of the author."
+  } else if (author.validity.tooShort) {
+    authorError.textContent = `Entered value should be at least ${author.minLength} characters; you entered ${author.value.length}.`
+  } else if (author.validity.tooLong) {
+    authorError.textContent = `Entered value should be maximum ${author.maxLength} characters; you entered ${author.value.length}.`
+  }
+
+  authorError.className = "error active";
+}
+
+function showPagesError() {
+  if (pages.validity.valueMissing) {
+    pagesError.textContent = "You need the enter the number of pages."
+  } else if (pages.validity.rangeUnderflow) {
+    pagesError.textContent = `Entered value should be at least ${pages.minLength} characters; you entered ${pages.value}.`
+  } else if (pages.validity.rangeOverflow) {
+    pagesError.textContent = `Entered value should be maximum ${pages.maxLength} characters; you entered ${pages.value}.`
+  }
+
+  pagesError.className = "error active";
 }
